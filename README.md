@@ -10,8 +10,14 @@ SOURCE_REPOSITORY=
 TARGET_REPOSITORY=
 ECR_URL=${CUSTOMER_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
 
+TMP_FILE=/tmp/imagePushedAt ; > ${TMP_FILE}
+
 eval $(aws ecr get-login)
 availableTags=$(aws ecr list-images --repository-name ${SOURCE_REPOSITORY} | jq -r '.imageIds[].imageTag')
+
+echo "${availableTags}" | while read tag; do
+  aws ecr describe-images --repository-name ${SOURCE_REPOSITORY} --image-ids imageTag=${tag} | jq -r '.imageDetails[].imagePushedAt' >> ${TMP_FILE}
+done
 
 echo "${availableTags}" | while read tag; do
   docker images -q | sort -u | while read image; do 
