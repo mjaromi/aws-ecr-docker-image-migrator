@@ -16,10 +16,12 @@ eval $(aws ecr get-login)
 availableTags=$(aws ecr list-images --repository-name ${SOURCE_REPOSITORY} | jq -r '.imageIds[].imageTag')
 
 echo "${availableTags}" | while read tag; do
-  aws ecr describe-images --repository-name ${SOURCE_REPOSITORY} --image-ids imageTag=${tag} | jq -r '.imageDetails[].imagePushedAt' >> ${TMP_FILE}
+  imagePushedAt=$(aws ecr describe-images --repository-name ${SOURCE_REPOSITORY} --image-ids imageTag=${tag} | jq -r '.imageDetails[].imagePushedAt')
+  echo "${imagePushedAt},${tag}" >> ${TMP_FILE}
 done
 
-echo "${availableTags}" | while read tag; do
+cat ${TMP_FILE} | sort | while read image; do
+  tag=$(echo ${image} | cut -d',' -f2)
   docker images -q | sort -u | while read image; do 
     echo "=> Remove image: ${image}"
     docker rmi ${image} -f &>/dev/null
