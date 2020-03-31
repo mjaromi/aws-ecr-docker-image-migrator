@@ -15,7 +15,7 @@ TMP_FILE=/tmp/imagePushedAt ; > ${TMP_FILE}
 eval $(aws ecr get-login)
 availableTags=$(aws ecr list-images --repository-name ${SOURCE_REPOSITORY} | jq -r '.imageIds[].imageTag')
 
-echo "${availableTags}" | while read tag; do
+echo "${availableTags}" | grep -v null | while read tag; do
   imagePushedAt=$(aws ecr describe-images --repository-name ${SOURCE_REPOSITORY} --image-ids imageTag=${tag} | jq -r '.imageDetails[].imagePushedAt')
   echo "${imagePushedAt},${tag}" >> ${TMP_FILE}
 done
