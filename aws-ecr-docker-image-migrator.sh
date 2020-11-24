@@ -3,7 +3,12 @@
 CUSTOMER_ID=$1
 SOURCE_REPOSITORY=$2
 TARGET_REPOSITORY=$3
-ECR_URL=${CUSTOMER_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+
+if [[ ! -z "${AWS_DEFAULT_REGION}" ]]; then
+    ECR_URL=${CUSTOMER_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+else
+    ECR_URL=${CUSTOMER_ID}.dkr.ecr.$(aws configure get region 2>/dev/null).amazonaws.com
+fi
 
 TMP_FILE=/tmp/imagePushedAt ; > ${TMP_FILE}
 
