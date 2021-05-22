@@ -7,5 +7,8 @@
 
 ## usage
 ```shell
-./aws-ecr-docker-image-migrator.sh <AWS_CUSTOMER_ID> <ECR_SOURCE_REPOSITORY> <ECR_TARGET_REPOSITORY>
+./aws-ecr-docker-image-migrator.sh <SOURCE_AWS_PROFILE> <SOURCE_CUSTOMER_ID> <SOURCE_REPOSITORY> <TARGET_AWS_PROFILE> <TARGET_CUSTOMER_ID> <TARGET_REPOSITORY> 
 ```
+
+## license
+MIT
